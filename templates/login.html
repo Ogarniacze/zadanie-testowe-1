@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+{% if form.errors and not form.non_field_errors %}
+    <p class="error">Formularz zawiera błędy.</p>
+{% endif %}
+
+{% if form.non_field_errors %}
+    {% for error in form.non_field_errors %}
+        <p class="errornote">Błędny użytkownik lub hasło.</p>
+    {% endfor %}
+{% endif %}
+
+<div id="content-main">
+    <form action="{% url 'u-login' %}" method="post" id="login-form">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form.username.errors }}
+            {{ form.username.label_tag }} {{ form.username }}
+          </div>
+        <div class="form-row">
+            {{ form.password.errors }}
+            {{ form.password.label_tag }} {{ form.password }}
+            <input type="hidden" name="next" value="{{ next }}">
+        </div>
+        <div class="submit-row">
+            <input type="submit" value="Log in">
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>CityList</h1>
+    <a href="{% url 'u-logout' %}">Logout</a>
+    <hr>
+    <div>
+        <h2>Lista miast</h2>
+        <ul>
+            {% for miasto in object_list %}
+            <li>{{ miasto }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <hr>
+    <div>
+        <form action="{% url 'u-citylist-create' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Zapisz">
+        </form>
+    </div>
+    <hr>
+    <div>
+        <h2>Szukaj miasta</h2>
+    </div>
+</body>
+</html>
