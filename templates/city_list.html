@@ -3,30 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet"
+          href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet"
+          href="https://jqueryui.com/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
-    <h1>CityList</h1>
-    <a href="{% url 'u-logout' %}">Logout</a>
-    <hr>
-    <div>
-        <h2>Lista miast</h2>
-        <ul>
-            {% for miasto in object_list %}
+<h1>CityList</h1>
+<a href="{% url 'u-logout' %}">Logout</a>
+<hr>
+<div>
+    <h2>Lista miast</h2>
+    <ul>
+        {% for miasto in object_list %}
             <li>{{ miasto }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    <hr>
-    <div>
-        <form action="{% url 'u-citylist-create' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Zapisz">
-        </form>
-    </div>
-    <hr>
-    <div>
-        <h2>Szukaj miasta</h2>
-    </div>
+        {% endfor %}
+    </ul>
+</div>
+<hr>
+<div>
+    <form action="{% url 'u-citylist-create' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Zapisz">
+    </form>
+</div>
+<hr>
+<div>
+    <h2>Szukaj miasta</h2>
+    <input id="search" type="text">
+    <div style="display: none" id="citizens"></div>
+    <script>
+        let cache = []
+        $(function () {
+            jQuery("#search").autocomplete({
+                source: function (request, response) {
+                    jQuery.get({% url "u-citysearch" %}, {
+                        query: request.term
+                    }, function (data) {
+                        console.log(data)
+                        let tips = []
+                        cache = data
+                        data.forEach(function (i) {
+                            tips.push({"label": i["city"], "value": i["id"]})
+                        })
+                        response(tips);
+                    });
+                },
+                minLength: 3
+            })
+        })
+        $("#search").on("autocompleteselect", function (event, ui) {
+            document.getElementById("citizens").style.display = "block"
+            let city = {}
+            cache.forEach(function (i) {
+                if (i["id"] === ui.item.value) {
+                    city = i
+                    return
+                }
+            })
+            console.log(cache)
+            document.getElementById("citizens").textContent = ui.item.label + " ma " + city["citizens"] + "mieszkańców"
+        });
+    </script>
+</div>
 </body>
 </html>
