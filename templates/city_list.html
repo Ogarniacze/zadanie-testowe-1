@@ -34,14 +34,13 @@
 <div>
     <h2>Szukaj miasta</h2>
     <input id="search" type="text">
-    <div style="display: none" id="citizens"></div>
     <script>
         let cache = []
         $(function () {
             jQuery("#search").autocomplete({
                 source: function (request, response) {
                     jQuery.get({% url "u-citysearch" %}, {
-                        query: request.term
+                        search: request.term
                     }, function (data) {
                         console.log(data)
                         let tips = []
@@ -56,7 +55,6 @@
             })
         })
         $("#search").on("autocompleteselect", function (event, ui) {
-            document.getElementById("citizens").style.display = "block"
             let city = {}
             cache.forEach(function (i) {
                 if (i["id"] === ui.item.value) {
@@ -64,8 +62,7 @@
                     return
                 }
             })
-            console.log(cache)
-            document.getElementById("citizens").textContent = ui.item.label + " ma " + city["citizens"] + "mieszkańców"
+            window.location.href = '/city/'+city['id']+'/'
         });
     </script>
 </div>
