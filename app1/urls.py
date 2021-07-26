@@ -14,7 +14,7 @@ urlpatterns = [
         name='u-citylist'),
     path(r'add/', CityListCreateView.as_view(template_name="city_list.html"),
          name='u-citylist-create'),
-    path('szukaj/', CitySearchView.as_view()),
+    path('szukaj/', CitySearchView.as_view(), name="u-citysearch"),
     # LOGIN/LOGOUT/PASSWORD
     url(r'^login/$', auth_views.LoginView.as_view(
         redirect_authenticated_user=True, template_name='login.html', ), name='u-login'),
