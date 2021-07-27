@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from django.shortcuts import render
@@ -15,7 +16,8 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 
-class CityListCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView, ):
+class CityListCreateView(PermissionRequiredMixin, LoginRequiredMixin,
+                         CreateView, ):
     login_url = 'u-login'
     permission_required = 'app1.add_city'
 
@@ -47,7 +49,7 @@ class CityListView(PermissionRequiredMixin, LoginRequiredMixin, ListView, ):
 
 class CitySearchView(generics.ListAPIView):
     search_fields = ['city', ]
-    filter_backends = (filters.SearchFilter, )
+    filter_backends = (filters.SearchFilter,)
     queryset = City.objects.all()
     serializer_class = CitySearchSerializer
     authentication_classes = [SessionAuthentication]
@@ -60,3 +62,13 @@ class CityViewSet(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
+
+
+class CityDetailsView(CreateView):
+    login_url = 'u-login'
+    permission_required = 'app1.details_city'
+
+    def get(self, request, *args, **kwargs):
+        city = City.objects.get(id=kwargs['id'])
+        context = {'city': city}
+        return render(request, "city_details.html", context)
